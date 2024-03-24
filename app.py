@@ -5,8 +5,11 @@ def sleepover(yyyy_mm_dd, hakbun, birth, de_code, locgbn="KW", reason='null'):
     import json
     import time
 
+    if yyyy_mm_dd == '' or hakbun == '' or birth == '' or de_code == '':
+        return {"RESULT": False, "MESSAGE": "필수값이 없습니다."}
+
     '''
-    @Cookie 생성: 메인페이지에 접속하여 SCOUTER, JSESSIONID를 얻어온다.
+    @Cookie 생성: 메인페이지에 접속하여 SCOUTER, JSESSIONID를 얻어옴.
     '''
     url = "https://kw.happydorm.or.kr/00/0000.kmc"
     response = requests.get(url)
@@ -22,14 +25,14 @@ def sleepover(yyyy_mm_dd, hakbun, birth, de_code, locgbn="KW", reason='null'):
 
 
     '''
-    @로그인: 로그인 페이지에 접속하여 로그인을 한다.
+    @로그인: 로그인 페이지에 접속하여 로그인
     '''
 
     url = f"https://kw.happydorm.or.kr/00/login_list_sel.kmc?hakbun={hakbun}&birth={birth}&de_code={de_code}&locgbn={locgbn}"
     response = requests.get(url, cookies=cookies)
 
     '''
-    @계정정보 확인: 올바르게 로그인 되었는지 확인한다.
+    @계정정보 확인: 올바르게 로그인 되었는지 확인
     '''
 
     url = "https://kw.happydorm.or.kr/student/getIPSaHwakIn.kmc"
@@ -46,7 +49,7 @@ def sleepover(yyyy_mm_dd, hakbun, birth, de_code, locgbn="KW", reason='null'):
 
 
     '''
-    @외박신청: 외박신청 페이지에 접속하여 외박신청을 한다.
+    @외박신청: 외박신청 페이지에 접속하여 외박신청 접수
     '''
 
     headers = {
@@ -58,7 +61,7 @@ def sleepover(yyyy_mm_dd, hakbun, birth, de_code, locgbn="KW", reason='null'):
         'Upgrade-Insecure-Requests': '1',
         'Origin': 'https://kw.happydorm.or.kr',
         'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundarynDWLwZIUPHFHOBkJ',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.171 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.171 Safari/537.36',   # 적당한 User-Agent 변경을 추천드립니다
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-Mode': 'navigate',
@@ -85,10 +88,10 @@ def sleepover(yyyy_mm_dd, hakbun, birth, de_code, locgbn="KW", reason='null'):
     setStayOutRspn = response.content.decode('utf-8')
 
     if f"{yyyy_mm_dd} : 중복 신청된 외박일자 입니다." in setStayOutRspn:
-        return {"RESULT": False, "MESSAGE": "이미 신청한 외박일자입니다."}
+        return {"RESULT": False, "MESSAGE": "이미 신청된 외박일자입니다."}
 
     '''
-    @외박신청 결과 확인: 외박신청 결과를 확인한다.
+    @외박신청 결과 확인: 외박신청 결과 확인
     '''
     url = "https://kw.happydorm.or.kr/stayout/getStayoutList.kmc"
     # cPage=1&rows=10&list_type=mypage&month=2023-08-29
@@ -107,7 +110,7 @@ def sleepover(yyyy_mm_dd, hakbun, birth, de_code, locgbn="KW", reason='null'):
             resultCode = 1
 
     '''
-    @로그아웃: 로그아웃을 한다.
+    @로그아웃: 로그아웃
     '''
 
     url = "https://kw.happydorm.or.kr/00/0000_logout.kmc"
